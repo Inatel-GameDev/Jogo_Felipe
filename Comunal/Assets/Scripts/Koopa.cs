@@ -7,6 +7,19 @@ public class Koopa : MonoBehaviour
     public Sprite shellSprite;
     private bool shell;
     private bool isMoving;
+    private AnimationController anim;
+
+    private void Awake(){
+        anim = GetComponent<AnimationController>();
+    }
+
+    private void LateUpdate(){
+        if(shell){
+            anim.ChangeAnimationState("Spin");
+        }else if(isMoving){
+            anim.ChangeAnimationState("Walking");
+        }
+    }
     private void OnCollisionEnter2D(Collision2D col)
     {
         if(!shell && col.gameObject.CompareTag("Player")){

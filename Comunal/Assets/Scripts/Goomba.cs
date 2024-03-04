@@ -17,6 +17,13 @@ public class Goomba : MonoBehaviour
         }
     }
 
+    private void OnCollisionStay2D(Collision2D col){
+        if(col.gameObject.CompareTag("Hook")){
+            EnemyController enemy = GetComponent<EnemyController>();
+            enemy.transform.position = col.transform.position;
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D col){
         if(col.gameObject.layer == LayerMask.NameToLayer("Shell")){
             GetComponent<Death>().enabled = true;

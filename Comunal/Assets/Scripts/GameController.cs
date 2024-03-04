@@ -1,6 +1,7 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.SceneManagement;
-
 public class GameController : MonoBehaviour
 {
     public static GameController Instance {get; private set;}
@@ -8,7 +9,8 @@ public class GameController : MonoBehaviour
     public int stage {get; private set;} = 1;
     public int lives {get; private set;}
     public int coins {get; private set;}
-
+    public int health {get; private set;}
+    public int currentHeath {get; private set;}
     private void Awake(){
         if(Instance != null){
             DestroyImmediate(gameObject);   
@@ -24,11 +26,14 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void Start(){
+   void Start()
+    {
         NewGame();
     }
 
     private void NewGame(){
+        health = 4;
+        currentHeath = health;
         lives = 3;
         LoadLevel(world, stage);
     }
@@ -57,7 +62,6 @@ public class GameController : MonoBehaviour
     }
 
     private void GameOver(){
-        Debug.Log("Gameover");
         NewGame();
     }
 

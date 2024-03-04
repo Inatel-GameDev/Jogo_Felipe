@@ -3,6 +3,13 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public enum PlayerState{
+        FreePlay,
+        Charging,
+        Throwing,
+        Cutscene
+    }
+    public PlayerState state;
     private Vector2 input;
     private Vector2 velocity;
     private Rigidbody2D rb2d;
@@ -10,8 +17,7 @@ public class PlayerController : MonoBehaviour
     public PlayerSpriteRenderer smallRenderer;
     public PlayerSpriteRenderer bigRenderer;
     private Death death;
-
-
+    public Hook hook;
     float moveSpeed = 8;
     public float puloMax = 5f;
     public float jumpForce => 2f * puloMax/0.5f; //getter only propriety
@@ -19,20 +25,21 @@ public class PlayerController : MonoBehaviour
 
     public bool grounded {get; private set;}
     public bool jumping {get; private set;}
+    public bool charging {get; private set;}
+    public bool throwing {get; private set;}
     public bool running => Mathf.Abs(velocity.x) > 0.25f || Mathf.Abs(input.x) > 0.25f;
     public bool sliding => (input.x > 0f && velocity.x < 0f) || (input.x < 0f && velocity.x > 0f);
-
-    public bool big => bigRenderer.enabled;
     public bool dead => death.enabled;
 
     private void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();
         death = GetComponent<Death>();
+        state = PlayerState.FreePlay;
     }
 
     // Update is called once per frame
-    void Update()
+    public void Update()
     {
         grounded = rb2d.Raycast(Vector2.down);
         if(grounded){
@@ -43,7 +50,21 @@ public class PlayerController : MonoBehaviour
 
         input.x = Input.GetAxisRaw("Horizontal");
         input.y = Input.GetAxisRaw("Vertical");
-        velocity.x = Mathf.MoveTowards(velocity.x, input.x * moveSpeed, moveSpeed * 2 * Time.deltaTime);
+
+        if(state == PlayerState.FreePlay){
+            velocity.x = Mathf.MoveTowards(velocity.x, input.x * moveSpeed, moveSpeed * 2 * Time.deltaTime);
+        }
+        if(state == PlayerState.Charging){
+            hook.gameObject.SetActive(true);
+            velocity.x = Mathf.MoveTowards(velocity.x, input.x * moveSpeed/2, moveSpeed * 2 * Time.deltaTime);
+            if(Input.GetKeyUp(KeyCode.Z)){
+
+                state = PlayerState.Throwing;
+            }
+        }
+        else if(state == PlayerState.Throwing){
+            velocity.x = Mathf.MoveTowards(velocity.x, 0, moveSpeed * 2 * Time.deltaTime);
+        }
 
         if(rb2d.Raycast(Vector2.right * velocity.x)){ //Checa se tem alguma coisa no bloco a direita sem precisar de collider :)
             velocity.x = 0f;
@@ -71,10 +92,13 @@ public class PlayerController : MonoBehaviour
         velocity.y = Mathf.Max(velocity.y, 0f);
         jumping = velocity.y > 0f; //jeito mais bonito de fazer uma condição booleana, lembrar pra o futuro | bool = (resultado booleano da expressão)
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             velocity.y = jumpForce;
             jumping = true;
+        }
+        if(Input.GetKey(KeyCode.Z) && !throwing){
+            state = PlayerState.Charging;
         }
     }
 
@@ -88,10 +112,6 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D col)
     {
-        if(transform.Test(col.transform, Vector2.up)){
-            Debug.Log("bateu a cabeca");
-            velocity.y = 0;
-        }
 
         if(col.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
@@ -100,39 +120,28 @@ public class PlayerController : MonoBehaviour
                 jumping = true;
             }
         }
-        else if (col.gameObject.CompareTag("PowerUp"))
-        {
-            PowerUp();
-        }else{
+        else{
             if(col.transform.Test(transform, Vector2.up)){
                 velocity.y = 0;
             }
         }
     }
 
-    void PowerUp()
+    void Interact()
     {
-        //BigMario = true;
+        var collider = Physics2D.OverlapCircle(transform.position, 2f);
+        if(collider != null){
+            collider.GetComponent<NPCController>()?.Interact(transform);
+        }
     }
 
     public void Hit()
     {
         Debug.Log("Hit");
-        if(big){
-            Shrink();
-        }else{
-            Die();
-        }
-    }
-
-    public void Shrink(){
-
     }
 
     void Die()
     {
-        smallRenderer.enabled = false;
-        bigRenderer.enabled = false;
         death.enabled = true;
 
         GameController.Instance.ResetLevel(3f);

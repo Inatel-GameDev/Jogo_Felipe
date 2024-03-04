@@ -13,7 +13,7 @@ public class PlayerSpriteRenderer : MonoBehaviour
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        player = GetComponentInParent<PlayerController>();
+        player = GetComponent<PlayerController>();
         anim = GetComponent<AnimationController>();
     }
 
@@ -35,6 +35,8 @@ public class PlayerSpriteRenderer : MonoBehaviour
             anim.ChangeAnimationState("Run");
         else if(player.sliding)
             anim.ChangeAnimationState("Slide");
+        else if(player.charging)
+            anim.ChangeAnimationState("Charge");
         else
             anim.ChangeAnimationState("Idle");
     }

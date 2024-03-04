@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 7268676366782274857}
   - component: {fileID: 5296925117140287416}
   - component: {fileID: 6156568219546318776}
+  - component: {fileID: 5976382038814436688}
+  - component: {fileID: 2858260872694191362}
   m_Layer: 8
   m_Name: Koopa
   m_TagString: Enemy
@@ -237,3 +239,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deathSprite: {fileID: 21300000, guid: 2945bf2e04f5e974da08514348c595e8, type: 3}
+--- !u!95 &5976382038814436688
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8236943802299674160}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: bcf66b4126912744db486ba247213bbe, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2858260872694191362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8236943802299674160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fccf30e1b3b464b4c818ea9e884f40fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -33,6 +33,12 @@ public class Coins : MonoBehaviour
         }
     }
 
+    private void OnCollisionStay2D(Collision2D col){
+        if(col.gameObject.CompareTag("Hook")){
+            transform.position = col.transform.position;
+        }
+    }
+
     public void Collected(){
         //CancelInvoke();
         StartCoroutine(AnimateCoin());
